@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust Graph — 3D Propagation Explorer</title>
+  <script src="https://unpkg.com/3d-force-graph"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --accent: #c084fc;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    #3d-graph {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .ui-overlay {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+      max-width: 320px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      background: rgba(192, 132, 252, 0.2);
+      color: var(--accent);
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .meta {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    #node-details {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 10;
+      display: none;
+    }
+
+    .controls-hint {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 11px;
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.3);
+      padding: 8px 16px;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="ui-overlay">
+    <div class="glass-card">
+      <h1>🛡️ Trust Graph <span class="badge">Prop-Viz</span></h1>
+      <div class="meta" id="graph-meta">
+        Analyzing propagation topology...
+      </div>
+    </div>
+  </div>
+
+  <div id="node-details" class="glass-card">
+    <div id="detail-content"></div>
+  </div>
+
+  <div class="controls-hint">
+    <b>Orbit:</b> Left Click & Drag | <b>Pan:</b> Right Click & Drag | <b>Zoom:</b> Scroll
+  </div>
+
+  <div id="3d-graph"></div>
+
+  <script>
+    // Configuration from local server will be injected here or loaded from data.json
+    async function init() {
+      try {
+        const response = await fetch('data.json');
+        const data = await response.json();
+        render(data);
+      } catch (err) {
+        console.error("Failed to load graph data:", err);
+        document.getElementById('graph-meta').textContent = "Error: Use 'python main.py viz' to launch with data.";
+      }
+    }
+
+    function render(data) {
+      const elem = document.getElementById('3d-graph');
+      const Graph = ForceGraph3D()(elem)
+        .graphData(data)
+        .backgroundColor('#0f172a')
+        .nodeLabel('label')
+        .nodeColor(node => {
+          if (node.type === 'root') return '#c084fc';
+          return (node.score || 0) > 0.4 ? '#f43f5e' : '#10b981';
+        })
+        .nodeRelSize(7)
+        .linkWidth(1.5)
+        .linkColor(() => 'rgba(255, 255, 255, 0.15)')
+        .linkDirectionalArrowLength(3.5)
+        .linkDirectionalArrowRelPos(1)
+        .onNodeClick(node => {
+           const details = document.getElementById('node-details');
+           const content = document.getElementById('detail-content');
+           details.style.display = 'block';
+           content.innerHTML = `
+              <div style="color:var(--accent); font-weight:700; margin-bottom:8px;">${node.label}</div>
+              <div style="font-size:12px; margin-bottom:12px; color:var(--text-dim); font-style:italic;">"${node.text || 'No text content available'}"</div>
+              <div style="display:flex; justify-content:space-between; font-size:11px;">
+                <span>Role: <b>${node.type.toUpperCase()}</b></span>
+                <span style="color:${node.score > 0.4 ? '#fb7185':'#34d399'}">Risk: ${(node.score * 100).toFixed(1)}%</span>
+              </div>
+           `;
+        });
+
+      // Update meta
+      document.getElementById('graph-meta').textContent = 
+        `Loaded ${data.nodes.length} nodes and ${data.links.length} propagation edges across the network.`;
+
+      // Slow rotation
+      Graph.controls().autoRotate = true;
+      Graph.controls().autoRotateSpeed = 0.5;
+    }
+
+    init();
+  </script>
+</body>
+</html>
