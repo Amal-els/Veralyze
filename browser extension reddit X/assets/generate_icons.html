@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<canvas id="c"></canvas>
+<script>
+function generateIcon(size) {
+  const canvas = document.getElementById('c');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Background circle
+  const cx = size / 2, cy = size / 2, r = size * 0.44;
+
+  // Radial glow
+  const bg = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 1.5);
+  bg.addColorStop(0, '#1e1b4b');
+  bg.addColorStop(1, '#0a0c1a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, size, size);
+
+  // Shield body
+  const gradient = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+  gradient.addColorStop(0, '#6366f1');
+  gradient.addColorStop(1, '#a855f7');
+
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - r);
+  ctx.quadraticCurveTo(cx + r, cy - r * 0.6, cx + r * 0.85, cy);
+  ctx.quadraticCurveTo(cx + r * 0.5, cy + r * 0.8, cx, cy + r);
+  ctx.quadraticCurveTo(cx - r * 0.5, cy + r * 0.8, cx - r * 0.85, cy);
+  ctx.quadraticCurveTo(cx - r, cy - r * 0.6, cx, cy - r);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  // Inner glow
+  ctx.shadowColor = '#818cf8';
+  ctx.shadowBlur = size * 0.15;
+
+  // Checkmark
+  const s = size * 0.12;
+  ctx.beginPath();
+  ctx.moveTo(cx - s * 1.2, cy + s * 0.1);
+  ctx.lineTo(cx - s * 0.2, cy + s * 1.1);
+  ctx.lineTo(cx + s * 1.5, cy - s * 0.9);
+  ctx.strokeStyle = '#22c55e';
+  ctx.lineWidth = Math.max(2, size * 0.06);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  return canvas.toDataURL('image/png');
+}
+
+// Generate all sizes
+[16, 48, 128].forEach(size => {
+  const dataUrl = generateIcon(size);
+  const link = document.createElement('a');
+  link.download = `icon${size}.png`;
+  link.href = dataUrl;
+  link.textContent = `Download icon${size}.png`;
+  link.style.display = 'block';
+  link.style.margin = '10px';
+  document.body.appendChild(link);
+});
+</script>
+</body>
+</html>

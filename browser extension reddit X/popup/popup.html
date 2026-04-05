@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trust Graph</title>
+  <link rel="stylesheet" href="popup.css" />
+  <script src="3d-force-graph.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header id="popup-header">
+      <div id="logo-wrap">
+        <span id="logo-icon">TG</span>
+        <div>
+          <h1 id="app-title">Trust Graph</h1>
+          <p id="app-sub">Cross-platform post analyzer</p>
+        </div>
+      </div>
+      <button id="btn-settings" title="Settings">S</button>
+    </header>
+
+    <section id="mode-card" class="state-section">
+      <div id="mode-copy">
+        <h2 id="mode-title">Extraction Mode</h2>
+        <p id="mode-subtitle">Turn this on to inspect posts with hover highlight and click-to-analyze.</p>
+      </div>
+      <label class="toggle-switch" for="toggle-extraction-mode">
+        <input type="checkbox" id="toggle-extraction-mode" />
+        <span class="toggle-slider"></span>
+      </label>
+    </section>
+
+    <section id="state-idle" class="state-section">
+      <div id="idle-icon">Inspect</div>
+      <h2>Hover And Click Any Post</h2>
+      <p>Move over a Reddit, Instagram, or X/Twitter post until it highlights, then click to extract the visible post and send it to the API.</p>
+      <div id="supported-sites">
+        <span class="site-chip reddit">Reddit</span>
+        <span class="site-chip instagram">Instagram</span>
+        <span class="site-chip x">X/Twitter</span>
+      </div>
+    </section>
+
+    <section id="state-result" class="state-section hidden">
+      <div id="result-header">
+        <span id="result-platform-badge"></span>
+        <span id="result-time"></span>
+      </div>
+
+      <div id="result-score-row">
+        <div id="result-ring-wrap">
+          <svg viewBox="0 0 80 80" id="result-ring-svg">
+            <circle cx="40" cy="40" r="32" class="ring-bg"/>
+            <circle cx="40" cy="40" r="32" class="ring-fill" id="result-ring-circle"
+              stroke-dasharray="201" stroke-dashoffset="201"/>
+          </svg>
+          <span id="result-score-num">0</span>
+        </div>
+        <div id="result-info">
+          <span id="result-verdict-chip" class="verdict-chip"></span>
+          <p id="result-summary-title"></p>
+          <p id="result-url"></p>
+        </div>
+      </div>
+
+      <div id="result-meta"></div>
+      <p id="result-explanation"></p>
+
+      <!-- 3D Propagation Visualization -->
+      <div id="visualization-section">
+        <h3 id="result-vis-title">Live OSINT Propagation Graph</h3>
+        <div id="3d-graph-container"></div>
+      </div>
+
+      <div id="result-reactions-section" class="hidden">
+        <div id="result-reactions-header">
+          <h3 id="result-reactions-title">Platform Reactions</h3>
+        </div>
+        <div id="result-reactions-list"></div>
+      </div>
+
+      <div id="result-payload-section">
+        <div id="result-payload-header">
+          <h3 id="result-payload-title">Extracted Data</h3>
+          <button id="btn-copy-payload" type="button">Copy JSON</button>
+        </div>
+        <pre id="result-payload">(no extracted payload saved yet)</pre>
+      </div>
+
+      <div id="result-bars">
+        <div class="mini-bar-row">
+          <span>Authenticity</span>
+          <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-auth"></div></div>
+          <span id="val-auth">0</span>
+        </div>
+        <div class="mini-bar-row">
+          <span>Context</span>
+          <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-ctx"></div></div>
+          <span id="val-ctx">0</span>
+        </div>
+        <div class="mini-bar-row">
+          <span>Source</span>
+          <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-src"></div></div>
+          <span id="val-src">0</span>
+        </div>
+      </div>
+
+      <button id="btn-analyze-again">Analyze Another Post</button>
+    </section>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

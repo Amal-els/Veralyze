@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trust Graph — Settings</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div id="app">
+
+    <header id="options-header">
+      <span id="header-logo">🛡️</span>
+      <div>
+        <h1>Trust Graph Settings</h1>
+        <p>Configure the AI fake news detection engine</p>
+      </div>
+    </header>
+
+    <main id="options-main">
+
+      <!-- Backend Configuration -->
+      <section class="options-card">
+        <h2 class="card-title">🔌 Backend Connection</h2>
+
+        <div class="field-group">
+          <label for="api-url">FastAPI Backend URL</label>
+          <input type="url" id="api-url" placeholder="http://localhost:8000" />
+          <p class="field-hint">The Trust Graph Engine FastAPI server address. Default: <code>http://localhost:8000</code></p>
+        </div>
+
+        <div class="field-group">
+          <label for="api-key">API Key <span class="optional">(optional)</span></label>
+          <input type="password" id="api-key" placeholder="sk-…" />
+          <p class="field-hint">Leave blank if your backend doesn't require authentication.</p>
+        </div>
+
+        <div id="connection-status" class="status-row hidden">
+          <span id="status-icon"></span>
+          <span id="status-text"></span>
+        </div>
+
+        <button id="btn-test" class="btn-secondary">🧪 Test Connection</button>
+      </section>
+
+      <!-- Analysis Settings -->
+      <section class="options-card">
+        <h2 class="card-title">⚙️ Analysis Settings</h2>
+
+        <div class="toggle-row">
+          <div>
+            <span class="toggle-label">Enable Demo Mode</span>
+            <span class="toggle-sub">Use mock AI responses when backend is unreachable</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="demo-mode" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <span class="toggle-label">Include Images in Analysis</span>
+            <span class="toggle-sub">Send image URLs to backend for deepfake detection</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="include-images" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <span class="toggle-label">Show Trust Badge on Posts</span>
+            <span class="toggle-sub">Automatically show score badge after analysis</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="show-badge" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Platform Settings -->
+      <section class="options-card">
+        <h2 class="card-title">🌐 Platforms</h2>
+
+        <div class="toggle-row">
+          <div>
+            <span class="toggle-label reddit-label">Reddit</span>
+            <span class="toggle-sub">right-click on any Reddit post</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="enable-reddit" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <span class="toggle-label instagram-label">Instagram</span>
+            <span class="toggle-sub">right-click on feed posts and reels</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="enable-instagram" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Save button -->
+      <div id="save-row">
+        <button id="btn-save" class="btn-primary">💾 Save Settings</button>
+        <span id="save-feedback" class="save-feedback hidden">✅ Saved!</span>
+      </div>
+
+    </main>
+
+    <footer id="options-footer">
+      Trust Graph Engine — Browser Extension v1.0.0 &nbsp;·&nbsp; Hackathon Build
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

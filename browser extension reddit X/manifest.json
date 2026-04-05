@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Trust Graph",
+  "version": "0.1.0",
+  "description": "Runs content scripts on Reddit, Instagram, and X/Twitter.",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background/service_worker.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html",
+  "host_permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "https://*.reddit.com/*",
+    "https://instagram.com/*",
+    "https://*.instagram.com/*",
+    "https://x.com/*",
+    "https://*.x.com/*",
+    "https://twitter.com/*",
+    "https://*.twitter.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.reddit.com/*",
+        "https://instagram.com/*",
+        "https://*.instagram.com/*",
+        "https://x.com/*",
+        "https://*.x.com/*",
+        "https://twitter.com/*",
+        "https://*.twitter.com/*"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "js": [
+        "content/extractors/reddit.js",
+        "content/extractors/instagram.js",
+        "content/extractors/twitter.js",
+        "content/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
